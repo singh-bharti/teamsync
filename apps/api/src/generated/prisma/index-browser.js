@@ -120,9 +120,192 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  name: 'name',
+  passwordHash: 'passwordHash',
+  role: 'role',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WorkspaceScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  ownerId: 'ownerId',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WorkspaceMemberScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  userId: 'userId',
+  role: 'role',
+  isActive: 'isActive',
+  joinedAt: 'joinedAt'
+};
+
+exports.Prisma.TaskScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  priority: 'priority',
+  createdById: 'createdById',
+  currentAssigneeId: 'currentAssigneeId',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TaskAssignmentHistoryScalarFieldEnum = {
+  id: 'id',
+  taskId: 'taskId',
+  fromUserId: 'fromUserId',
+  toUserId: 'toUserId',
+  assignedById: 'assignedById',
+  reason: 'reason',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.CommentScalarFieldEnum = {
+  id: 'id',
+  taskId: 'taskId',
+  authorId: 'authorId',
+  body: 'body',
+  isEdited: 'isEdited',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ActivityLogScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  taskId: 'taskId',
+  actorId: 'actorId',
+  type: 'type',
+  message: 'message',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  recipientId: 'recipientId',
+  workspaceId: 'workspaceId',
+  taskId: 'taskId',
+  commentId: 'commentId',
+  type: 'type',
+  title: 'title',
+  body: 'body',
+  isRead: 'isRead',
+  readAt: 'readAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.SortOrder = {
+  asc: 'asc',
+  desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
+exports.PlatformRole = exports.$Enums.PlatformRole = {
+  ADMIN: 'ADMIN',
+  USER: 'USER'
+};
+
+exports.WorkspaceRole = exports.$Enums.WorkspaceRole = {
+  MANAGER: 'MANAGER',
+  LEAD: 'LEAD',
+  MEMBER: 'MEMBER',
+  INTERN: 'INTERN',
+  CLIENT: 'CLIENT'
+};
+
+exports.TaskStatus = exports.$Enums.TaskStatus = {
+  TODO: 'TODO',
+  IN_PROGRESS: 'IN_PROGRESS',
+  DEV_REVIEW: 'DEV_REVIEW',
+  QA_REVIEW: 'QA_REVIEW',
+  QA_APPROVED: 'QA_APPROVED',
+  QA_REJECTED: 'QA_REJECTED',
+  UAT_REVIEW: 'UAT_REVIEW',
+  UAT_APPROVED: 'UAT_APPROVED',
+  UAT_REJECTED: 'UAT_REJECTED',
+  RELEASED: 'RELEASED',
+  DONE: 'DONE'
+};
+
+exports.TaskPriority = exports.$Enums.TaskPriority = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH',
+  CRITICAL: 'CRITICAL'
+};
+
+exports.AssignmentReason = exports.$Enums.AssignmentReason = {
+  INITIAL_ASSIGNMENT: 'INITIAL_ASSIGNMENT',
+  DEVELOPMENT: 'DEVELOPMENT',
+  DEV_REVIEW: 'DEV_REVIEW',
+  QA_REVIEW: 'QA_REVIEW',
+  UAT_REVIEW: 'UAT_REVIEW',
+  REWORK: 'REWORK',
+  RELEASE: 'RELEASE'
+};
+
+exports.ActivityType = exports.$Enums.ActivityType = {
+  WORKSPACE_CREATED: 'WORKSPACE_CREATED',
+  MEMBER_ADDED: 'MEMBER_ADDED',
+  MEMBER_REMOVED: 'MEMBER_REMOVED',
+  TASK_CREATED: 'TASK_CREATED',
+  TASK_UPDATED: 'TASK_UPDATED',
+  TASK_ASSIGNED: 'TASK_ASSIGNED',
+  TASK_STATUS_CHANGED: 'TASK_STATUS_CHANGED',
+  COMMENT_ADDED: 'COMMENT_ADDED'
+};
+
+exports.NotificationType = exports.$Enums.NotificationType = {
+  TASK_ASSIGNED: 'TASK_ASSIGNED',
+  TASK_STATUS_CHANGED: 'TASK_STATUS_CHANGED',
+  COMMENT_ADDED: 'COMMENT_ADDED',
+  MENTION: 'MENTION',
+  WORKSPACE_INVITE: 'WORKSPACE_INVITE'
+};
 
 exports.Prisma.ModelName = {
-
+  User: 'User',
+  Workspace: 'Workspace',
+  WorkspaceMember: 'WorkspaceMember',
+  Task: 'Task',
+  TaskAssignmentHistory: 'TaskAssignmentHistory',
+  Comment: 'Comment',
+  ActivityLog: 'ActivityLog',
+  Notification: 'Notification'
 };
 
 /**

@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output = "../../generated/prisma"
+  output   = "../../generated/prisma"
 }
 
 datasource db {
@@ -51,6 +51,25 @@ enum PlatformRole {
   USER
 }
 
+enum ActivityType {
+  WORKSPACE_CREATED
+  MEMBER_ADDED
+  MEMBER_REMOVED
+  TASK_CREATED
+  TASK_UPDATED
+  TASK_ASSIGNED
+  TASK_STATUS_CHANGED
+  COMMENT_ADDED
+}
+
+enum NotificationType {
+  TASK_ASSIGNED
+  TASK_STATUS_CHANGED
+  COMMENT_ADDED
+  MENTION
+  WORKSPACE_INVITE
+}
+
 model User {
   id           String       @id @default(uuid())
   email        String       @unique
@@ -61,14 +80,17 @@ model User {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
-  ownedWorkspaces Workspace[]       @relation("WorkspaceOwner")
+  ownedWorkspaces  Workspace[]       @relation("WorkspaceOwner")
   workspaceMembers WorkspaceMember[]
-  createdTasks Task[] @relation("TaskCreatedBy")
-  assignedTasks Task[] @relation("TaskCurrentAssignee")
+  createdTasks     Task[]            @relation("TaskCreatedBy")
+  assignedTasks    Task[]            @relation("TaskCurrentAssignee")
 
   assignmentsFrom      TaskAssignmentHistory[] @relation("TaskAssignmentFromUser")
   assignmentsTo        TaskAssignmentHistory[] @relation("TaskAssignmentToUser")
   assignmentsPerformed TaskAssignmentHistory[] @relation("TaskAssignmentAssignedBy")
+  comments             Comment[]               @relation("CommentAuthor")
+  activityLogs         ActivityLog[]           @relation("ActivityActor")
+  notifications        Notification[]          @relation("NotificationRecipient")
 }
 
 model Workspace {
@@ -83,9 +105,11 @@ model Workspace {
   owner   User              @relation("WorkspaceOwner", fields: [ownerId], references: [id])
   members WorkspaceMember[]
 
-  @@index([ownerId])
+  tasks         Task[]
+  activityLogs  ActivityLog[]
+  notifications Notification[]
 
-  tasks Task[]
+  @@index([ownerId])
 }
 
 model WorkspaceMember {
@@ -121,13 +145,16 @@ model Task {
   createdBy       User      @relation("TaskCreatedBy", fields: [createdById], references: [id])
   currentAssignee User?     @relation("TaskCurrentAssignee", fields: [currentAssigneeId], references: [id])
 
+  assignmentHistory TaskAssignmentHistory[]
+  comments          Comment[]
+  activityLogs      ActivityLog[]
+  notifications     Notification[]
+
   @@index([workspaceId])
   @@index([createdById])
   @@index([currentAssigneeId])
   @@index([status])
   @@index([priority])
-
-  assignmentHistory TaskAssignmentHistory[]
 }
 
 model TaskAssignmentHistory {
@@ -149,4 +176,69 @@ model TaskAssignmentHistory {
   @@index([toUserId])
   @@index([assignedById])
   @@index([reason])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  taskId    String
+  authorId  String
+  body      String
+  isEdited  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  task   Task @relation(fields: [taskId], references: [id])
+  author User @relation("CommentAuthor", fields: [authorId], references: [id])
+
+  notifications Notification[]
+
+  @@index([taskId])
+  @@index([authorId])
+}
+
+model ActivityLog {
+  id          String       @id @default(uuid())
+  workspaceId String
+  taskId      String?
+  actorId     String
+  type        ActivityType
+  message     String
+  metadata    Json?
+  createdAt   DateTime     @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  task      Task?     @relation(fields: [taskId], references: [id])
+  actor     User      @relation("ActivityActor", fields: [actorId], references: [id])
+
+  @@index([workspaceId])
+  @@index([taskId])
+  @@index([actorId])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model Notification {
+  id          String           @id @default(uuid())
+  recipientId String
+  workspaceId String?
+  taskId      String?
+  commentId   String?
+  type        NotificationType
+  title       String
+  body        String
+  isRead      Boolean          @default(false)
+  readAt      DateTime?
+  createdAt   DateTime         @default(now())
+
+  recipient User       @relation("NotificationRecipient", fields: [recipientId], references: [id])
+  workspace Workspace? @relation(fields: [workspaceId], references: [id])
+  task      Task?      @relation(fields: [taskId], references: [id])
+  comment   Comment?   @relation(fields: [commentId], references: [id])
+
+  @@index([recipientId])
+  @@index([workspaceId])
+  @@index([taskId])
+  @@index([commentId])
+  @@index([isRead])
+  @@index([createdAt])
 }
