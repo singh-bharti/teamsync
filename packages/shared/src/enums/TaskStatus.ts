@@ -1,0 +1,10 @@
+export enum TaskStatus {
+  BACKLOG = 'BACKLOG',
+  READY = 'READY',
+  IN_PROGRESS = 'IN_PROGRESS',
+  IN_REVIEW = 'IN_REVIEW',
+  QA_TESTING = 'QA_TESTING',
+  BLOCKED = 'BLOCKED',
+  DONE = 'DONE',
+  ARCHIVED = 'ARCHIVED',
+}
